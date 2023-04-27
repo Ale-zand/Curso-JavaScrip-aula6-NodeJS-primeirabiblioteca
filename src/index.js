@@ -6,12 +6,12 @@ function extraiLinks(texto) {
     const regex = /\[([^[\]]*?)\]\((https?:\/\/[^\s?#.].[^\s]*)\)/gm;
     const capturas = [...texto.matchAll(regex)];
     const resultados = capturas.map(captura => ({[captura[1]]: captura[2]}))
-    return resultados;
+    return resultados.length !==0 ? resultados : chalk.red('não há links no arquivo');
 }
 
 function trataErro(erro) {
     console.log(erro);
-    throw new Error(chalk.red(erro.code, 'não há arquivo no diretório'));
+    throw new Error(chalk.red(erro.code, chalk.red('não há arquivo no diretório')));
 }
 
 // Código assíncrono - async / await
@@ -21,12 +21,14 @@ async function pegaArquivo(caminhoDoArquivo) {
         const encoding = 'utf-8';
         const texto = await fs.promises.readFile(caminhoDoArquivo, encoding)
         // extraiLinks(texto);
-        console.log(extraiLinks(texto));
+        return extraiLinks(texto);
         // console.log(chalk.green(texto));
     } catch (erro) {
         trataErro(erro)
     }
 }
+
+export default pegaArquivo;
 
 // Código assíncrono - promessas com then()
 // function pegaArquivo(caminhoDoArquivo) {
@@ -49,7 +51,7 @@ async function pegaArquivo(caminhoDoArquivo) {
 //     })
 // }
 
-pegaArquivo('./arquivos/texto.md');
+// pegaArquivo('./arquivos/texto.md');
 // pegaArquivo('./arquivos/');
 
 // \[[^[\]]*?\]
